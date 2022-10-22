@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "247035111096",
+    "project_id": "passkeeper-914f5",
+    "storage_bucket": "passkeeper-914f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247035111096:android:3095a13ef08ccd1666f64d",
+        "android_client_info": {
+          "package_name": "com.nuvcse.passkeeper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247035111096-ur473f494bpu5bbo8hnqe71hktistbr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcqu4OMt0pHObrjftAbAfuu94uD9Tm8lk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247035111096-ur473f494bpu5bbo8hnqe71hktistbr7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
