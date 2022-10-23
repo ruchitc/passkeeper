@@ -43,42 +43,44 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         }
 
-        mRegisterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-
-                if(TextUtils.isEmpty(email)) {
-                    mEmail.setError("Enter your email.");
-                    return;
-                }
-
-                if(TextUtils.isEmpty(password)) {
-                    mPassword.setError("Enter the password");
-                    return;
-                }
-
-                if(password.length() < 6) {
-                    mPassword.setError("Password must be at least 6 characters long.");
-                    return;
-                }
-
-                progressBar.setVisibility(View.VISIBLE);
-
-                // Registering to database
-                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this,"Account created.", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
+        mRegisterBtn.setOnClickListener(mRegisterBtnListener);
     }
+
+    private View.OnClickListener mRegisterBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String email = mEmail.getText().toString().trim();
+            String password = mPassword.getText().toString().trim();
+
+            if(TextUtils.isEmpty(email)) {
+                mEmail.setError("Enter your email.");
+                return;
+            }
+
+            if(TextUtils.isEmpty(password)) {
+                mPassword.setError("Enter the password");
+                return;
+            }
+
+            if(password.length() < 6) {
+                mPassword.setError("Password must be at least 6 characters long.");
+                return;
+            }
+
+            progressBar.setVisibility(View.VISIBLE);
+
+            // Registering to database
+            fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()) {
+                        Toast.makeText(RegisterActivity.this,"Account created.", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    };
 }
