@@ -34,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.edit_text_email);
         mPassword = findViewById(R.id.edit_text_password);
         mRegisterBtn = findViewById(R.id.button_register);
+        mLoginBtn = findViewById(R.id.text_existing_user);
         progressBar = findViewById(R.id.progress_register);
 
         fAuth = FirebaseAuth.getInstance();
@@ -44,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         mRegisterBtn.setOnClickListener(mRegisterBtnListener);
+        mLoginBtn.setOnClickListener(mLoginBtnListener);
     }
 
     private View.OnClickListener mRegisterBtnListener = new View.OnClickListener() {
@@ -78,9 +80,17 @@ public class RegisterActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     } else {
                         Toast.makeText(RegisterActivity.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 }
             });
+        }
+    };
+
+    private View.OnClickListener mLoginBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
     };
 }
