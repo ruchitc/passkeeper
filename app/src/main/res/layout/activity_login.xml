@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/linear_password"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="165dp"
+        android:layout_marginTop="155dp"
         android:text="@string/text_login" />
 
     <TextView
@@ -91,6 +91,14 @@
         android:layout_marginTop="10dp"
         android:text="@string/text_new_account" />
 
+    <TextView
+        android:id="@+id/text_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_login"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:text="@string/text_forgot_password" />
 
     <ProgressBar
         android:id="@+id/progress_register"
@@ -99,7 +107,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/button_login"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="55dp"
         android:visibility="invisible" />
+
 
 </RelativeLayout>

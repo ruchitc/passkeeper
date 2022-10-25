@@ -12,4 +12,5 @@
     <string name="text_description_login">Login in to your account</string>
     <string name="text_logout">Logout</string>
     <string name="text_welcome">Welcome to the dashboard!</string>
+    <string name="text_forgot_password">Forgot password?</string>
 </resources>
