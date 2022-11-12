@@ -13,4 +13,6 @@
     <string name="text_logout">Logout</string>
     <string name="text_welcome">Welcome to the dashboard!</string>
     <string name="text_forgot_password">Forgot password?</string>
+    <string name="text_dashboard">Dashboard</string>
+    <string name="text_add_password">Add password</string>
 </resources>
