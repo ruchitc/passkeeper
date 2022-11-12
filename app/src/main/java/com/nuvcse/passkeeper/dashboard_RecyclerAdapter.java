@@ -13,12 +13,16 @@ import java.util.ArrayList;
 
 public class dashboard_RecyclerAdapter extends RecyclerView.Adapter<dashboard_RecyclerAdapter.MyViewHolder> {
 
+    private final DashboardInterface dashboardInterface;
+
     Context context;
     ArrayList<user_account_list> myAccountList;
 
-    public dashboard_RecyclerAdapter(Context context, ArrayList<user_account_list> myAccountList) {
+    // Constructor
+    public dashboard_RecyclerAdapter(Context context, ArrayList<user_account_list> myAccountList, DashboardInterface dashboardInterface) {
         this.context = context;
         this.myAccountList = myAccountList;
+        this.dashboardInterface = dashboardInterface;
     }
     @NonNull
     @Override
@@ -26,7 +30,7 @@ public class dashboard_RecyclerAdapter extends RecyclerView.Adapter<dashboard_Re
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.password_item, parent, false);
 
-        return new dashboard_RecyclerAdapter.MyViewHolder(view);
+        return new dashboard_RecyclerAdapter.MyViewHolder(view, dashboardInterface);
     }
 
     @Override
@@ -40,14 +44,30 @@ public class dashboard_RecyclerAdapter extends RecyclerView.Adapter<dashboard_Re
         return myAccountList.size();
     }
 
+    // Inner class
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView password_counter;
 
-        public MyViewHolder(@NonNull View itemView) {
+        // Inner class constructor
+        // itemView is an individual recyclerview item
+        public MyViewHolder(@NonNull View itemView, DashboardInterface dashboardInterface) {
             super(itemView);
 
             password_counter = itemView.findViewById(R.id.recycler_counter);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(dashboardInterface != null) {
+                        int pos = getAdapterPosition();
+
+                        if(pos != RecyclerView.NO_POSITION) {
+                            dashboardInterface.onItemClick(pos);
+                        }
+                    }
+                }
+            });
         }
     }
 }

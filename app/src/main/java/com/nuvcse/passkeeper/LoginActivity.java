@@ -31,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     ProgressBar progressBar;
 
+    Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,9 +78,11 @@ public class LoginActivity extends AppCompatActivity {
             fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()) {
+                    if(task.isSuccessful()) {   //Successful login
                         Toast.makeText(LoginActivity.this, "Logged in.", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+
+                        intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                        startActivity(intent);
                     } else {
                         Toast.makeText(LoginActivity.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
@@ -88,13 +92,16 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
+    // Registration activity for new users
     private View.OnClickListener mRegisterBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+            intent = new Intent(getApplicationContext(), RegisterActivity.class);
+            startActivity(intent);
         }
     };
 
+    // Forgot password activity
     private View.OnClickListener mForgotBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -106,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             resetDialog.setView(resetMail);
 
             resetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     String mail = resetMail.getText().toString();
@@ -124,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
             });
 
             resetDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 

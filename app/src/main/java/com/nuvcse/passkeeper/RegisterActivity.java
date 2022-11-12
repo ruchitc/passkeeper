@@ -25,6 +25,8 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     ProgressBar progressBar;
 
+    Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +41,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
 
+        //If user is already signed in
         if(fAuth.getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            intent = new Intent(getApplicationContext(), DashboardActivity.class);
+
+            startActivity(intent);
             finish();
         }
 
@@ -75,10 +80,12 @@ public class RegisterActivity extends AppCompatActivity {
             fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()) {
+                    if(task.isSuccessful()) {   //Successful registration
                         Toast.makeText(RegisterActivity.this,"Account created.", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
-                    } else {
+
+                        intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                        startActivity(intent);
+                    } else {    //Registration failed
                         Toast.makeText(RegisterActivity.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                     }
@@ -87,10 +94,12 @@ public class RegisterActivity extends AppCompatActivity {
         }
     };
 
+    //Login page for existing user
     private View.OnClickListener mLoginBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
         }
     };
 }
