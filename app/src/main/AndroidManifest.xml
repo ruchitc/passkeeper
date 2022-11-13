@@ -15,6 +15,13 @@
         android:theme="@style/Theme.Passkeeper"
         tools:targetApi="31">
         <activity
+            android:name=".EditPasswordPageActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".PasswordPageActivity"
             android:exported="false">
             <meta-data

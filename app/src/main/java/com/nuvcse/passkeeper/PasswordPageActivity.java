@@ -4,17 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class PasswordPageActivity extends AppCompatActivity {
 
-    Integer position;
-
-    TextView textView;
-    Button deletePassword;
+    TextView accNameView;
+    TextView emailView;
+    TextView passwordView;
+    Button deleteDetails;
+    Button editDetails;
 
     Bundle bundle;
 
@@ -23,22 +23,39 @@ public class PasswordPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_page);
 
-        bundle = new Bundle();
         bundle = getIntent().getExtras();
 
-        String counter;
+        Integer position = bundle.getInt("position");
+        String accName = bundle.getString("accName");
+        String email = bundle.getString("email");
+        String password = bundle.getString("password");
 
-        counter = bundle.getString("counter");
-        position = bundle.getInt("position");
+        accNameView = findViewById(R.id.text_accname_display);
+        if (accNameView.getText() != null) {
+            accNameView.setText(accName);
+        }
+        emailView = findViewById(R.id.text_email_display);
+        if (emailView.getText() != null) {
+            emailView.setText(email);
+        }
+        passwordView = findViewById(R.id.text_password_display);
+        if (passwordView.getText() != null) {
+            passwordView.setText(password);
+        }
 
-        Log.d("Password page", Integer.toString(position));
+        editDetails = findViewById(R.id.button_edit_details);
+        editDetails.setOnClickListener(mEditBtnListener);
 
-        textView = findViewById(R.id.textView3);
-        textView.setText(counter);
-
-        deletePassword = findViewById(R.id.button_delete_password);
-        deletePassword.setOnClickListener(mDeleteBtnListener);
+        deleteDetails = findViewById(R.id.button_delete_details);
+        deleteDetails.setOnClickListener(mDeleteBtnListener);
     }
+
+    private View.OnClickListener mEditBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+        }
+    };
 
     private View.OnClickListener mDeleteBtnListener = new View.OnClickListener() {
         @Override

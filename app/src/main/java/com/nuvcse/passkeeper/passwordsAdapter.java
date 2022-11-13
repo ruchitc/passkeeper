@@ -11,32 +11,32 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class dashboard_RecyclerAdapter extends RecyclerView.Adapter<dashboard_RecyclerAdapter.MyViewHolder> {
+public class passwordsAdapter extends RecyclerView.Adapter<passwordsAdapter.MyViewHolder> {
 
     private final DashboardInterface dashboardInterface;
 
     Context context;
-    ArrayList<user_account_list> myAccountList;
+    ArrayList<account_details> myAccountList;
 
     // Constructor
-    public dashboard_RecyclerAdapter(Context context, ArrayList<user_account_list> myAccountList, DashboardInterface dashboardInterface) {
+    public passwordsAdapter(Context context, ArrayList<account_details> myAccountList, DashboardInterface dashboardInterface) {
         this.context = context;
         this.myAccountList = myAccountList;
         this.dashboardInterface = dashboardInterface;
     }
     @NonNull
     @Override
-    public dashboard_RecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public passwordsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.password_item, parent, false);
 
-        return new dashboard_RecyclerAdapter.MyViewHolder(view, dashboardInterface);
+        return new passwordsAdapter.MyViewHolder(view, dashboardInterface);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull dashboard_RecyclerAdapter.MyViewHolder holder, int position) {
-        String counter = myAccountList.get(position).getCounter();
-        holder.password_counter.setText(counter);
+    public void onBindViewHolder(@NonNull passwordsAdapter.MyViewHolder holder, int position) {
+        String accName = myAccountList.get(position).getAccName();
+        holder.accNameView.setText(accName);
     }
 
     @Override
@@ -47,14 +47,14 @@ public class dashboard_RecyclerAdapter extends RecyclerView.Adapter<dashboard_Re
     // Inner class
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView password_counter;
+        TextView accNameView;
 
         // Inner class constructor
         // itemView is an individual recyclerview item
         public MyViewHolder(@NonNull View itemView, DashboardInterface dashboardInterface) {
             super(itemView);
 
-            password_counter = itemView.findViewById(R.id.recycler_counter);
+            accNameView = itemView.findViewById(R.id.text_accname_display);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
