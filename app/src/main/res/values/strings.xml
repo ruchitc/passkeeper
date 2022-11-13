@@ -15,4 +15,5 @@
     <string name="text_forgot_password">Forgot password?</string>
     <string name="text_dashboard">Dashboard</string>
     <string name="text_add_password">Add password</string>
+    <string name="text_delete_password">Delete password</string>
 </resources>
