@@ -35,6 +35,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
     RecyclerView passwordsRecycler;
 
     Button addPassword;
+    Button buttonLogout;
 
     passwordsAdapter adapter;
 
@@ -51,14 +52,21 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
         setContentView(R.layout.activity_dashboard);
 
         addPassword = findViewById(R.id.button_add_password);
+        buttonLogout = findViewById(R.id.button_logout);
         passwordsRecycler = findViewById(R.id.recycler_view);
 
         Log.d("DashboardActivity", Integer.toString(myAccountList.size()));
         setMyAccountList();
         Log.d("DashboardActivity", Integer.toString(myAccountList.size()));
         setAdapter();
+        Log.d("DashboardActivity", Integer.toString(myAccountList.size()));
 
         addPassword.setOnClickListener(mAddBtnListener);
+        buttonLogout.setOnClickListener(mLogoutBtnListener);
+
+        for(int i = 0; i < myAccountList.size(); i++) {
+            Log.d("DashboardActivityMain", myAccountList.get(i).accName);
+        }
     }
 
     private void setMyAccountList() {
@@ -84,6 +92,12 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
                     @Override
                     public void onFailure(@NonNull Exception e) {
 
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        adapter.notifyDataSetChanged();
                     }
                 });
 
@@ -243,4 +257,13 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
                 });
                  */
     }
+
+    private View.OnClickListener mLogoutBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        }
+    };
 }
