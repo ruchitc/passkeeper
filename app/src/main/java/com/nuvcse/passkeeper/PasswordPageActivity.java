@@ -96,22 +96,28 @@ public class PasswordPageActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        /*
-        mColRef.document(document)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+    private void deleteFromDB() {
+        Query query = mColRef.whereEqualTo("accName", accName).whereEqualTo("email", email);
+        query.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for(QueryDocumentSnapshot document : task.getResult()) {
+                                mColRef.document(document.getId())
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                finish();
+                                            }
+                                        });
+                            }
+                        }
                     }
                 });
-         */
     }
 
     private void updateView(String accName, String email, String password) {
@@ -144,10 +150,8 @@ public class PasswordPageActivity extends AppCompatActivity {
     private View.OnClickListener mDeleteBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            backIntent.putExtras(bundle);
-
-            setResult(1, backIntent);
-            finish();
+            deleteFromDB();
+            setResult(1);
         }
     };
 

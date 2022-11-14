@@ -190,39 +190,14 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
 
                     // request code 1 to delete
                     if(result.getResultCode() == 1) {
-                        Intent intent = result.getData();
-
-                        if(intent != null) {
-                            backBundle = intent.getExtras();
-                            position = backBundle.getInt("position");
-
-                            removeFromList(position);
-                        }
-
+                        myAccountList.clear();
+                        setMyAccountList();
                     }
 
                     // request code 2 to update
                     if(result.getResultCode() == 2) {
                         myAccountList.clear();
                         setMyAccountList();
-
-                            /*
-                            backBundle = intent.getExtras();
-
-                            accName = backBundle.getString("accName");
-                            email = backBundle.getString("email");
-                            password = backBundle.getString("password");
-
-                            addToList(accName, email, password);
-                             */
-
-                            /*
-                            account_details tempObj = new account_details(accName, email, password);
-                            myAccountList.add(tempObj);
-                            adapter.notifyDataSetChanged();
-
-                             */
-
                     }
                 }
             }
