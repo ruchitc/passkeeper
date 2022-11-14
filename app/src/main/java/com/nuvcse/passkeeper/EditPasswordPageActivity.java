@@ -17,6 +17,7 @@ public class EditPasswordPageActivity extends AppCompatActivity {
 
     Button buttonSave;
 
+    Intent intent;
     Bundle bundle;
 
     @Override
@@ -24,9 +25,18 @@ public class EditPasswordPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_password_page);
 
+        bundle = getIntent().getExtras();
+
+        String accName = bundle.getString("accName");
+        String email = bundle.getString("email");
+        String password = bundle.getString("password");
+
         editAccName = findViewById(R.id.edit_text_accname);
+        editAccName.setText(accName);
         editEmail = findViewById(R.id.edit_text_email);
+        editEmail.setText(email);
         editPassword = findViewById(R.id.edit_text_password);
+        editPassword.setText(password);
 
         buttonSave = findViewById(R.id.button_save);
         buttonSave.setOnClickListener(mSaveBtnListener);

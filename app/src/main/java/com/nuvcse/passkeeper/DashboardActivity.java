@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,9 +41,8 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
     passwordsAdapter adapter;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("users").document(user.getEmail());
+    private CollectionReference mColRef = FirebaseFirestore.getInstance().collection("users").document(user.getEmail()).collection("passwords");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,26 +52,28 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
         setContentView(R.layout.activity_dashboard);
 
         addPassword = findViewById(R.id.button_add_password);
-        buttonLogout = findViewById(R.id.button_logout);
-        passwordsRecycler = findViewById(R.id.recycler_view);
-
-        Log.d("DashboardActivity", Integer.toString(myAccountList.size()));
-        setMyAccountList();
-        Log.d("DashboardActivity", Integer.toString(myAccountList.size()));
-        setAdapter();
-        Log.d("DashboardActivity", Integer.toString(myAccountList.size()));
-
         addPassword.setOnClickListener(mAddBtnListener);
+
+        buttonLogout = findViewById(R.id.button_logout);
         buttonLogout.setOnClickListener(mLogoutBtnListener);
 
-        for(int i = 0; i < myAccountList.size(); i++) {
-            Log.d("DashboardActivityMain", myAccountList.get(i).accName);
-        }
+        passwordsRecycler = findViewById(R.id.recycler_view);
+
+        setMyAccountList();
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        adapter = new passwordsAdapter(this, myAccountList, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        passwordsRecycler.setLayoutManager(layoutManager);
+        passwordsRecycler.setItemAnimator(new DefaultItemAnimator());
+        passwordsRecycler.setAdapter(adapter);
     }
 
     private void setMyAccountList() {
 
-        mDocRef.collection("passwords")
+        mColRef
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -79,11 +81,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
                         if(task.isSuccessful()) {
                             for(QueryDocumentSnapshot document : task.getResult()) {
                                 account_details temp = document.toObject(account_details.class);
-                                Log.d("DashboardActivity", temp.accName);
-                                Log.d("DashboardActivity", temp.email);
-                                Log.d("DashboardActivity", temp.password);
                                 myAccountList.add(temp);
-                                Log.d("DashboardActivity", Integer.toString(myAccountList.size()));
                             }
                         }
                     }
@@ -100,61 +98,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
                         adapter.notifyDataSetChanged();
                     }
                 });
-
-        /*
-        db.collection(user.toString())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            for(QueryDocumentSnapshot document : task.getResult()) {
-                                account_details temp = document.toObject(account_details.class);
-                                myAccountList.add(temp);
-                            }
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("DashboardActivity", "Error getting db");
-                    }
-                });
-         */
     }
-
-    private void setAdapter() {
-        adapter = new passwordsAdapter(this, myAccountList, this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        passwordsRecycler.setLayoutManager(layoutManager);
-        passwordsRecycler.setItemAnimator(new DefaultItemAnimator());
-        passwordsRecycler.setAdapter(adapter);
-    }
-
-    ActivityResultLauncher<Intent> deleteLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-
-                    Integer position;
-                    Bundle backBundle;
-
-                    if(result.getResultCode() == 1) {
-                        Intent intent = result.getData();
-
-                        if(intent != null) {
-                            backBundle = intent.getExtras();
-                            position = backBundle.getInt("position");
-
-                            removeFromList(position);
-                        }
-
-                    }
-                }
-            }
-    );
 
     @Override
     public void onItemClick(int position) {
@@ -173,7 +117,54 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
         bundle.putString("password", password);
 
         intent.putExtras(bundle);
-        deleteLauncher.launch(intent);
+        passwordPageLauncher.launch(intent);
+    }
+
+    private View.OnClickListener mAddBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            Intent intent = new Intent(getApplicationContext(), EditPasswordPageActivity.class);
+
+            Bundle bundle = new Bundle();
+            bundle.putString("accName", "");
+            bundle.putString("email", "");
+            bundle.putString("password", "");
+
+            intent.putExtras(bundle);
+            saveLauncher.launch(intent);
+        }
+    };
+
+    private View.OnClickListener mLogoutBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        }
+    };
+
+    private void addToList(String accName, String email, String password) {
+        myAccountList.add(new account_details(accName, email, password));
+        adapter.notifyDataSetChanged();
+
+        Integer position = myAccountList.size() - 1;
+
+        mColRef
+                .add(myAccountList.get(position))
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     private void removeFromList(int position) {
@@ -182,6 +173,60 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
 
         // remove from database
     }
+
+    ActivityResultLauncher<Intent> passwordPageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+
+                    Integer position;
+
+                    String accName;
+                    String email;
+                    String password;
+
+                    Bundle backBundle;
+
+                    // request code 1 to delete
+                    if(result.getResultCode() == 1) {
+                        Intent intent = result.getData();
+
+                        if(intent != null) {
+                            backBundle = intent.getExtras();
+                            position = backBundle.getInt("position");
+
+                            removeFromList(position);
+                        }
+
+                    }
+
+                    // request code 2 to update
+                    if(result.getResultCode() == 2) {
+                        myAccountList.clear();
+                        setMyAccountList();
+
+                            /*
+                            backBundle = intent.getExtras();
+
+                            accName = backBundle.getString("accName");
+                            email = backBundle.getString("email");
+                            password = backBundle.getString("password");
+
+                            addToList(accName, email, password);
+                             */
+
+                            /*
+                            account_details tempObj = new account_details(accName, email, password);
+                            myAccountList.add(tempObj);
+                            adapter.notifyDataSetChanged();
+
+                             */
+
+                    }
+                }
+            }
+    );
 
     ActivityResultLauncher<Intent> saveLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -211,59 +256,4 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
             }
     );
 
-    private View.OnClickListener mAddBtnListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-            Intent intent = new Intent(getApplicationContext(), EditPasswordPageActivity.class);
-            saveLauncher.launch(intent);
-        }
-    };
-
-    private void addToList(String accName, String email, String password) {
-        myAccountList.add(new account_details(accName, email, password));
-        adapter.notifyDataSetChanged();
-
-        Integer position = myAccountList.size() - 1;
-
-        mDocRef.collection("passwords")
-                .add(myAccountList.get(position))
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
-        /*
-        db.collection("users").document(user.getEmail())
-                .set(myAccountList.get(myAccountList.size() - 1));
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("DashboardActivity", "added to db");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("DashboardActivity", "error adding to db");
-                    }
-                });
-                 */
-    }
-
-    private View.OnClickListener mLogoutBtnListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
-        }
-    };
 }
