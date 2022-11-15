@@ -13,13 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -35,8 +40,9 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
     ArrayList<account_details> myAccountList = new ArrayList<>();
     RecyclerView passwordsRecycler;
 
-    Button addPassword;
-    Button buttonLogout;
+    FloatingActionButton addPassword;
+
+    Toolbar toolbar;
 
     passwordsAdapter adapter;
 
@@ -45,17 +51,36 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
     private CollectionReference mColRef = FirebaseFirestore.getInstance().collection("users").document(user.getEmail()).collection("passwords");
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout_item:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("DashboardActivity", "start");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         addPassword = findViewById(R.id.button_add_password);
         addPassword.setOnClickListener(mAddBtnListener);
-
-        buttonLogout = findViewById(R.id.button_logout);
-        buttonLogout.setOnClickListener(mLogoutBtnListener);
 
         passwordsRecycler = findViewById(R.id.recycler_view);
 
@@ -133,15 +158,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardInt
 
             intent.putExtras(bundle);
             saveLauncher.launch(intent);
-        }
-    };
-
-    private View.OnClickListener mLogoutBtnListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
         }
     };
 

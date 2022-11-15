@@ -32,9 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        mUsername = findViewById(R.id.edit_text_username);
-        mEmail = findViewById(R.id.edit_text_email);
-        mPassword = findViewById(R.id.edit_text_password);
+        mEmail = findViewById(R.id.email_input);
+        mPassword = findViewById(R.id.password_input);
         mRegisterBtn = findViewById(R.id.button_register);
         mLoginBtn = findViewById(R.id.text_existing_user);
         progressBar = findViewById(R.id.progress_register);
@@ -85,6 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         intent = new Intent(getApplicationContext(), DashboardActivity.class);
                         startActivity(intent);
+                        finish();
                     } else {    //Registration failed
                         Toast.makeText(RegisterActivity.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
@@ -100,6 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
         public void onClick(View view) {
             intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
+            finish();
         }
     };
 }
