@@ -28,7 +28,7 @@ public class passwordsAdapter extends RecyclerView.Adapter<passwordsAdapter.MyVi
     @Override
     public passwordsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.password_item, parent, false);
+        View view = inflater.inflate(R.layout.password_card_item, parent, false);
 
         return new passwordsAdapter.MyViewHolder(view, dashboardInterface);
     }

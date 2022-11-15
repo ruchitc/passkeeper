@@ -38,8 +38,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mEmail = findViewById(R.id.edit_text_email);
-        mPassword = findViewById(R.id.edit_text_password);
+        mEmail = findViewById(R.id.email_input);
+        mPassword = findViewById(R.id.password_input);
         mLoginBtn = findViewById(R.id.button_login);
         mRegisterBtn = findViewById(R.id.text_existing_user);
         mForgotBtn = findViewById(R.id.text_forgot_password);
@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         intent = new Intent(getApplicationContext(), DashboardActivity.class);
                         startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
@@ -98,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onClick(View view) {
             intent = new Intent(getApplicationContext(), RegisterActivity.class);
             startActivity(intent);
+            finish();
         }
     };
 
